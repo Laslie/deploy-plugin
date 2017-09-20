@@ -1,18 +1,5 @@
 package hudson.plugins.deploy.glassfish;
 
-import com.cloudbees.plugins.credentials.CredentialsProvider;
-import com.cloudbees.plugins.credentials.CredentialsScope;
-import com.cloudbees.plugins.credentials.domains.Domain;
-import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
-import hudson.EnvVars;
-import hudson.FilePath;
-import hudson.model.BuildListener;
-import hudson.model.FreeStyleBuild;
-import hudson.model.StreamBuildListener;
-import hudson.model.FreeStyleProject;
-import hudson.model.Node;
-import hudson.slaves.EnvironmentVariablesNodeProperty;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +23,20 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
+
+import com.cloudbees.plugins.credentials.CredentialsProvider;
+import com.cloudbees.plugins.credentials.CredentialsScope;
+import com.cloudbees.plugins.credentials.domains.Domain;
+import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
+
+import hudson.EnvVars;
+import hudson.FilePath;
+import hudson.model.BuildListener;
+import hudson.model.FreeStyleBuild;
+import hudson.model.FreeStyleProject;
+import hudson.model.Node;
+import hudson.model.StreamBuildListener;
+import hudson.slaves.EnvironmentVariablesNodeProperty;
 
 /**
  * @author soudmaijer
@@ -117,19 +118,22 @@ public class GlassFish3xAdapterTest {
      * @throws InterruptedException
      */
     //@Test
-    public void testDeploy() throws IOException, InterruptedException {
+    @SuppressWarnings("deprecation")
+	public void testDeploy() throws IOException, InterruptedException {
         
         adapter.redeploy(new FilePath(new File("src/test/simple.war")), "contextPath", null, null, new StreamBuildListener(System.out));
     }
     
     //@Test
-    public void testRemoteDeploy() throws IOException, InterruptedException {
+    @SuppressWarnings("deprecation")
+	public void testRemoteDeploy() throws IOException, InterruptedException {
        
 
         remoteAdapter.redeploy(new FilePath(new File("src/test/simple.war")), "contextPath", null, null, new StreamBuildListener(System.out));
     }
     
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void testVariables() throws Exception {
         Node n = jenkinsRule.createSlave();
     	EnvironmentVariablesNodeProperty property = new EnvironmentVariablesNodeProperty();

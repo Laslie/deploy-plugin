@@ -23,19 +23,24 @@
  */
 package hudson.plugins.deploy;
 
-import com.cloudbees.plugins.credentials.CredentialsProvider;
-import com.cloudbees.plugins.credentials.CredentialsScope;
-import com.cloudbees.plugins.credentials.domains.Domain;
-import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
-import hudson.FilePath;
-import hudson.model.*;
-import hudson.plugins.deploy.tomcat.Tomcat8xAdapter;
-import jenkins.model.Jenkins;
+import java.util.ArrayList;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
-import java.util.ArrayList;
+import com.cloudbees.plugins.credentials.CredentialsProvider;
+import com.cloudbees.plugins.credentials.CredentialsScope;
+import com.cloudbees.plugins.credentials.domains.Domain;
+import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
+
+import hudson.FilePath;
+import hudson.model.FreeStyleProject;
+import hudson.model.Result;
+import hudson.model.Run;
+import hudson.model.Slave;
+import hudson.plugins.deploy.tomcat.Tomcat8xAdapter;
+import jenkins.model.Jenkins;
 
 /**
  * Tests that deployment can be called from a remote agent.
@@ -65,8 +70,9 @@ public class RemoteCallableTest {
 
         ArrayList<ContainerAdapter> adapters = new ArrayList<ContainerAdapter>();
         adapters.add(new Tomcat8xAdapter("http://example.com", "test-id"));
-        project.getPublishersList().add(
-                new DeployPublisher(adapters, war.getName(), "/app", false));
+        ArrayList<ContainerDeploy> deploys = new ArrayList<ContainerDeploy>();
+        deploys.add(new ContainerDeploy(adapters, war.getName(), "/app", false));
+        project.getPublishersList().add(new DeployPublisher(deploys));
 
         Run run = project.scheduleBuild2(0).get();
         j.assertBuildStatus(Result.FAILURE, run); // should fail because Tomcat DNE
